@@ -5,6 +5,7 @@ function App() {
   const fileInputRef = useRef();
 
   const [file, setFile] = useState();
+  const [result, setResult] = useState('')
 
   const uploadFileClick = () => {
     fileInputRef.current.click();
@@ -19,8 +20,9 @@ function App() {
         const data = new FormData();
         data.append("name", file.name);
         data.append("file", file);
-        console.log(data);
         const response = await uploadFile(data);
+        console.log(response.data.path)
+        setResult(response.data.path);
       }
     };
     getImage();
@@ -63,6 +65,9 @@ function App() {
             style={{ display: "none" }}
             onChange={(e) => setFile(e.target.files[0])}
           />
+          <br />
+          <br /><br />
+          <a href={result} target='_blank'>{result}</a>
         </div>
       </div>
     </>
