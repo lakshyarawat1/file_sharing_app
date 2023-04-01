@@ -1,35 +1,72 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useRef, useState, useEffect } from "react";
+import { uploadFile } from "./services/api";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const fileInputRef = useRef();
+
+  const [file, setFile] = useState();
+
+  const uploadFileClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const url =
+    "https://i.pinimg.com/originals/16/46/24/1646243661201a0892cc4b1a64fcbacf.jpg";
+
+  useEffect(() => {
+    const getImage = async () => {
+      if (file) {
+        const data = new FormData();
+        data.append("name", file.name);
+        data.append("file", file);
+        console.log(data);
+        const response = await uploadFile(data);
+      }
+    };
+    getImage();
+  }, [file]);
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <>
+      <div style={{ display: "flex" }}>
+        <img src={url} alt="banner" style={{ height: "100vh", width: "30%" }} />
+        <div
+          style={{
+            padding: 5,
+            margin: 5,
+            marginTop: 120,
+            textAlign: "center",
+            width: "100%",
+          }}
+        >
+          <h1>Simple File Sharing App</h1>
+          <p>
+            Upload your files and retrive them from any where ! <br /> For Free
+            !
+          </p>
+          <button
+            onClick={() => uploadFileClick()}
+            style={{
+              backgroundColor: "#aae112",
+              border: 0,
+              padding: 15,
+              borderRadius: 20,
+            }}
+          >
+            Upload
+          </button>
+          <br />
+          <br />
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={(e) => setFile(e.target.files[0])}
+          />
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+    </>
+  );
 }
 
-export default App
+export default App;
